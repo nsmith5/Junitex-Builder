@@ -1,0 +1,8 @@
+[Plugin]
+Module=julia_latex_to_unicode
+Loader=python3
+Name=Julia Latex to Unicode
+Description=Julia Latex to Unicode Tab Completion
+Authors=Nathan Smith <nathan.smith5@mail.mcgill.ca>
+Copyright=Copyright (c) 2016 Nathan Smith
+X-Completion-Provider-Languages=julia
