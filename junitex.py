@@ -20,6 +20,7 @@
 
 import gi
 import os
+import urllib2
 
 gi.require_version('GtkSource', '3.0')
 gi.require_version('Ide', '1.0')
@@ -28,9 +29,12 @@ from gi.repository import GObject
 from gi.repository import GtkSource
 from gi.repository import Ide
 
-class CompletionProvider(Ide.Object, GtkSource.CompletionProvider, Ide.CompletionProvider):
+class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
+                         Ide.CompletionProvider):
     _dictionary = None
     _dictionary_filled = False
+    _url = "https://raw.githubusercontent.com\
+    /JuliaLang/julia/master/base/latex_symbols.jl"
 
     def do_populate(self, context):
         iter1 = context.props.iter              # Current cursor position
@@ -59,20 +63,10 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider, Ide.Completio
         return True, iter
 
     def init_dict(self):
-        # Initialize the latex to unicode symbol dictionary
-        __location__ = os.path.dirname(__file__)
-        latex_file = open(os.path.join(__location__, 'Latex_Keys.txt'), 'r')
-        symbol_file = open(os.path.join(__location__, 'Unicode_keys.txt'), 'r')
+        _dictionary = {}
+        response = urllib2.urlopen(_url)
+        item = line.split()
+        if len(item)>=3 and item[1] == "=>":
+            _dictionary[item[0]] = item[2].strip(',')
 
-        latex_keys = list(latex_file)
-        unicode_symbols = list(symbol_file)
-
-        for index in range(len(latex_keys)):
-            latex_keys[index] = latex_keys[index].rstrip('\n')
-
-        for index in range(len(unicode_symbols)):
-            unicode_symbols[index] = unicode_symbols[index].rstrip('\n').encode('utf-8').decode('unicode-escape')
-
-        self._dictionary = dict(zip(latex_keys, unicode_symbols))
-        self._dictionary_filled = True
         return
