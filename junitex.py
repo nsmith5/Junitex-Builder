@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#julia_latex_to_unicode.py
+# Junitex.py
 #
 # Copyright (C) 2016 Nathan Smith <nathan.smith5@mail.mcgill.ca>
 #

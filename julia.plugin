@@ -1,8 +1,8 @@
 [Plugin]
 Module=junitex
 Loader=python3
-Name=Julia Latex to Unicode Completions
-Description=Julia latex-to-unicode tab completions
+Name=Junitex
+Description=Julia Latex-to-Unicode Tab Completions for Gnome-Builder
 Authors=Nathan Smith <nathan.smith5@mail.mcgill.ca>
 Copyright=Copyright (c) 2016 Nathan Smith
 X-Completion-Provider-Languages=julia
