@@ -20,7 +20,6 @@
 
 import gi
 import os
-import urllib2
 
 gi.require_version('GtkSource', '3.0')
 gi.require_version('Ide', '1.0')
@@ -33,8 +32,6 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
                          Ide.CompletionProvider):
     _dictionary = None
     _dictionary_filled = False
-    _url = "https://raw.githubusercontent.com\
-    /JuliaLang/julia/master/base/latex_symbols.jl"
 
     def do_populate(self, context):
         iter1 = context.props.iter              # Current cursor position
@@ -63,10 +60,14 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
         return True, iter
 
     def init_dict(self):
-        _dictionary = {}
-        response = urllib2.urlopen(_url)
-        item = line.split()
-        if len(item)>=3 and item[1] == "=>":
-            _dictionary[item[0]] = item[2].strip(',')
+        self._dictionary = {}
+        symboldir = os.path.dirname(os.path.abspath(__file__))
+        symbolfilename = os.path.join(symboldir, "symbols.txt")
+        symbolfile = open(symbolfilename, 'r')
+        for line in symbolfile:
+            words = line.split(" ")
+            self._dictionary[words[0]] = words[1].strip('\n')
+            print(words[0], words[1])
+        self._dictionary_filled=True
 
         return
