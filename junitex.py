@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#julia_latex_to_unicode.py
+# Junitex.py
 #
 # Copyright (C) 2016 Nathan Smith <nathan.smith5@mail.mcgill.ca>
 #
@@ -28,7 +28,8 @@ from gi.repository import GObject
 from gi.repository import GtkSource
 from gi.repository import Ide
 
-class CompletionProvider(Ide.Object, GtkSource.CompletionProvider, Ide.CompletionProvider):
+class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
+                         Ide.CompletionProvider):
     _dictionary = None
     _dictionary_filled = False
 
@@ -59,20 +60,14 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider, Ide.Completio
         return True, iter
 
     def init_dict(self):
-        # Initialize the latex to unicode symbol dictionary
-        __location__ = os.path.dirname(__file__)
-        latex_file = open(os.path.join(__location__, 'Latex_Keys.txt'), 'r')
-        symbol_file = open(os.path.join(__location__, 'Unicode_keys.txt'), 'r')
+        self._dictionary = {}
+        symboldir = os.path.dirname(os.path.abspath(__file__))
+        symbolfilename = os.path.join(symboldir, "symbols.txt")
+        symbolfile = open(symbolfilename, 'r')
+        for line in symbolfile:
+            words = line.split(" ")
+            self._dictionary[words[0]] = words[1].strip('\n')
+            print(words[0], words[1])
+        self._dictionary_filled=True
 
-        latex_keys = list(latex_file)
-        unicode_symbols = list(symbol_file)
-
-        for index in range(len(latex_keys)):
-            latex_keys[index] = latex_keys[index].rstrip('\n')
-
-        for index in range(len(unicode_symbols)):
-            unicode_symbols[index] = unicode_symbols[index].rstrip('\n').encode('utf-8').decode('unicode-escape')
-
-        self._dictionary = dict(zip(latex_keys, unicode_symbols))
-        self._dictionary_filled = True
         return
