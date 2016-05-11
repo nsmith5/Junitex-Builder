@@ -34,30 +34,42 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
     _dictionary_filled = False
 
     def do_populate(self, context):
-        iter1 = context.props.iter              # Current cursor position
-        textbuffer = iter1.get_buffer()         # Text buffer
-        iter2 = iter1.copy()                    # Copy the first buffer
-        iter1.backward_word_starts(1)            # Stick iter1 at the begining of the word
-        iter1.backward_char()                    # Start of word ignores "\" for some reason
+        iter1 = context.props.iter          
+        textbuffer = iter1.get_buffer()         
+        iter2 = iter1.copy()                    
+        iter1.backward_word_starts(1)            
+        iter1.backward_char()                  
+        text1 = textbuffer.get_text(iter1, iter2, True)  
+        iter1.backward_char()
+        text2 = textbuffer.get_text(iter1, iter2, True)
 
-        text = textbuffer.get_text(iter1, iter2, True)      # Text from buffer between iter1 and iter2
-
-        if not text.startswith('\\'):                    # If the word doesn't start with "\" then quit
+        if not (text1.startswith('\\') or text2.startswith('\\')):         
             context.add_proposals(self, [], True)
             return
 
         if self._dictionary_filled == False:
             self.init_dict()
 
-        if text in self._dictionary.keys():
-            item = GtkSource.CompletionItem(label=self._dictionary[text], text=self._dictionary[text])
+        if text1 in self._dictionary.keys():
+            item = GtkSource.CompletionItem(label=self._dictionary[text1], 
+                                            text=self._dictionary[text1])
+            context.add_proposals(self, [item], True)
+        
+        if text2 in self._dictionary.keys():
+            item = GtkSource.CompletionItem(label=self._dictionary[text2], 
+                                            text=self._dictionary[text2])
             context.add_proposals(self, [item], True)
 
     def do_get_start_iter(self, context, proposal):
         iter = context.props.iter
         iter.backward_word_starts(1)
         iter.backward_char()
-        return True, iter
+        g = iter.get_char()
+        if g == "\\":
+            return True, iter
+        else:
+            iter.backward_char()
+            return True, iter
 
     def init_dict(self):
         self._dictionary = {}
