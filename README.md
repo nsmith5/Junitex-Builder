@@ -9,7 +9,3 @@ Junitex-Builder provides Latex to Unicode tab completions for the Julia language
 >> git clone https://github.com/nsmith5/Junitex-Builder.git
 ```
 
-### Limitation
-
-Currently, Junitex can not tab complete superscript or subscript unicode characters for some reason. Otherwise everything else works
-
