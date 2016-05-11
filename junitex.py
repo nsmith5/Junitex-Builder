@@ -79,7 +79,6 @@ class CompletionProvider(Ide.Object, GtkSource.CompletionProvider,
         for line in symbolfile:
             words = line.split(" ")
             self._dictionary[words[0]] = words[1].strip('\n')
-            print(words[0], words[1])
         self._dictionary_filled=True
 
         return
